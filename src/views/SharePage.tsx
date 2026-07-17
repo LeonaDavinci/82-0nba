@@ -1,10 +1,11 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useLocation, useParams } from "wouter";
+import { useParams, useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 import { StatBar } from "@/components/StatBar";
 import { downloadShareImage } from "@/engine/shareImage";
-import { usePageMeta } from "@/lib/usePageMeta";
 import type { RunRecord } from "@/types";
 
 const POSITION_COLORS: Record<string, string> = {
@@ -16,23 +17,20 @@ const POSITION_COLORS: Record<string, string> = {
 };
 
 export default function SharePage() {
-  usePageMeta(
-    "Shared 82-0 Run — NBA Team Builder",
-    "Check out this 82-0 NBA team builder run and try to beat the score in the 82-0 game.",
-  );
   const params = useParams<{ id: string }>();
-  const [, nav] = useLocation();
+  const id = params?.id;
+  const router = useRouter();
   const { loadRun, startNewGame } = useGameStore();
   const [run, setRun] = useState<RunRecord | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (params.id) {
-      const found = loadRun(params.id);
+    if (id) {
+      const found = loadRun(id);
       setRun(found);
     }
-  }, [params.id]);
+  }, [id, loadRun]);
 
   if (!run) {
     return (
@@ -46,7 +44,7 @@ export default function SharePage() {
           <p className="text-stone-800 font-bold text-lg">Run Not Found</p>
           <p className="text-stone-400 text-sm">This run may have expired or is from another device.</p>
           <button
-            onClick={() => { startNewGame(); nav("/play"); }}
+            onClick={() => { startNewGame(); router.push("/play"); }}
             className="px-6 py-3 rounded-xl text-white font-bold text-sm"
             style={{ background: "#1D428A" }}
           >
@@ -89,7 +87,7 @@ export default function SharePage() {
           animate={{ opacity: 1 }}
           className="space-y-5"
         >
-          <button onClick={() => nav("/")} className="text-stone-400 text-sm hover:text-stone-700 transition-colors">
+          <button onClick={() => router.push("/")} className="text-stone-400 text-sm hover:text-stone-700 transition-colors">
             ← Home
           </button>
 
@@ -169,7 +167,7 @@ export default function SharePage() {
               {saved ? "✓ Image Saved!" : saving ? "Generating…" : "📸 Download Image"}
             </button>
             <button
-              onClick={() => { startNewGame(); nav("/play"); }}
+              onClick={() => { startNewGame(); router.push("/play"); }}
               className="w-full py-3.5 rounded-2xl font-bold text-stone-700 surface surface-hover"
             >
               🏀 Try Your Own Draft

@@ -1,10 +1,11 @@
+"use client";
+
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 import { getPlayersForRound, getDisplayStats } from "@/engine/draft";
 import { getTeamMeta } from "@/data/teamColors";
-import { usePageMeta } from "@/lib/usePageMeta";
 import type { Player, PosFilter, SortKey } from "@/types";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"] as const;
@@ -116,11 +117,7 @@ function SlotCircle({
 }
 
 export default function PlayPage() {
-  usePageMeta(
-    "Play 82-0 — Draft Your NBA Roster",
-    "Draft five NBA legends under random team and era constraints in the 82-0 game, then simulate your season.",
-  );
-  const [, nav] = useLocation();
+  const router = useRouter();
   const {
     slots,
     selectedPlayers,
@@ -155,7 +152,7 @@ export default function PlayPage() {
           >
             Start Game
           </button>
-          <button onClick={() => nav("/")} className="block mx-auto text-stone-400 text-sm">
+          <button onClick={() => router.push("/")} className="block mx-auto text-stone-400 text-sm">
             ← Back to Home
           </button>
         </motion.div>
@@ -200,7 +197,7 @@ export default function PlayPage() {
 
   function handleFinish() {
     try { finishDraft(); } catch { /* ignore */ }
-    nav("/result");
+    router.push("/result");
   }
 
   return (
@@ -209,7 +206,7 @@ export default function PlayPage() {
       {/* ── Top header ── */}
       <div className="px-4 pt-4 pb-2 shrink-0">
         <div className="flex items-center justify-between mb-3">
-          <button onClick={() => nav("/")} className="text-stone-400 hover:text-stone-700 transition-colors">
+          <button onClick={() => router.push("/")} className="text-stone-400 hover:text-stone-700 transition-colors">
             <span className="text-lg">←</span>
           </button>
           <div className="flex items-center gap-1.5">

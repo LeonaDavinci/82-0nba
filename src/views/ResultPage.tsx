@@ -1,10 +1,11 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { motion, animate } from "framer-motion";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 import { StatBar } from "@/components/StatBar";
 import { downloadShareImage } from "@/engine/shareImage";
-import { usePageMeta } from "@/lib/usePageMeta";
 import type { RunRecord } from "@/types";
 
 function AnimatedNumber({ target, duration = 1.5 }: { target: number; duration?: number }) {
@@ -34,17 +35,17 @@ const POSITION_COLORS: Record<string, string> = {
 };
 
 export default function ResultPage() {
-  usePageMeta(
-    "Your 82-0 Result — NBA Season Simulation",
-    "See how your drafted NBA squad performs in the 82-0 game — wins, offense, defense, chemistry, and MVP.",
-  );
-  const [, nav] = useLocation();
+  const router = useRouter();
   const { result, slots, selectedPlayers, runId, recentRuns, startNewGame } = useGameStore();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // No simulated result in the store (e.g. deep-link or refresh) → go home.
+  useEffect(() => {
+    if (!result) router.replace("/");
+  }, [result, router]);
+
   if (!result) {
-    nav("/");
     return null;
   }
 
@@ -84,7 +85,7 @@ export default function ResultPage() {
 
   function handlePlayAgain() {
     startNewGame();
-    nav("/play");
+    router.push("/play");
   }
 
   return (
@@ -96,7 +97,7 @@ export default function ResultPage() {
           className="space-y-5"
         >
           {/* Back */}
-          <button onClick={() => nav("/")} className="text-stone-400 text-sm hover:text-stone-700 transition-colors">
+          <button onClick={() => router.push("/")} className="text-stone-400 text-sm hover:text-stone-700 transition-colors">
             ← Home
           </button>
 

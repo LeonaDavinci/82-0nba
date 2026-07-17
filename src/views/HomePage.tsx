@@ -1,12 +1,14 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useLocation } from "wouter";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 import { getDailySlots } from "@/engine/draft";
 import { getTeamMeta } from "@/data/teamColors";
 import { BasketballIcon } from "@/components/Logo";
-import { usePageMeta } from "@/lib/usePageMeta";
 import type { RunRecord } from "@/types";
 
 const staggerContainer: Variants = {
@@ -97,13 +99,13 @@ function WinBadge({ wins }: { wins: number }) {
 }
 
 function RunCard({ run }: { run: RunRecord }) {
-  const [, nav] = useLocation();
+  const router = useRouter();
   const names = run.selectedPlayers.map((p) => p.name.split(" ").pop() ?? "").join(" · ");
   return (
     <motion.button
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.97 }}
-      onClick={() => nav(`/run/${run.id}`)}
+      onClick={() => router.push(`/run/${run.id}`)}
       className="w-full text-left surface surface-hover rounded-2xl p-4"
     >
       <div className="flex items-center justify-between gap-3">
@@ -121,11 +123,7 @@ function RunCard({ run }: { run: RunRecord }) {
 }
 
 export default function HomePage() {
-  usePageMeta(
-    "82-0 — NBA Team Builder Game | Draft Legends",
-    "82-0 is the NBA team builder game where you draft all-time legends under random constraints and chase a flawless 82-0 season. Play the free 82-0 NBA game now.",
-  );
-  const [, nav] = useLocation();
+  const router = useRouter();
   const { startNewGame, recentRuns } = useGameStore();
 
   // Client-only data (localStorage-backed + date-based) is rendered after
@@ -135,8 +133,8 @@ export default function HomePage() {
 
   const dailySlots = getDailySlots();
 
-  function handlePlay() { startNewGame(); nav("/play"); }
-  function handleDaily() { startNewGame(true); nav("/play"); }
+  function handlePlay() { startNewGame(); router.push("/play"); }
+  function handleDaily() { startNewGame(true); router.push("/play"); }
 
   const best = recentRuns.length
     ? [...recentRuns].sort((a, b) => b.result.wins - a.result.wins)[0]
@@ -160,8 +158,8 @@ export default function HomePage() {
               className="inline-block mb-3"
             >
               <h1 className="m-0 leading-none">
-                <a
-                  href={import.meta.env.BASE_URL}
+                <Link
+                  href="/"
                   aria-label="82-0"
                   className="inline-flex items-center gap-3 no-underline"
                 >
@@ -169,7 +167,7 @@ export default function HomePage() {
                   <span className="nba-wordmark text-7xl font-black tracking-tighter leading-none">
                     82-0
                   </span>
-                </a>
+                </Link>
               </h1>
             </motion.div>
             <p className="text-stone-600 text-sm max-w-xs mx-auto leading-relaxed">
@@ -331,13 +329,13 @@ export default function HomePage() {
             </article>
 
             <nav aria-label="Game links" className="flex flex-wrap gap-3 justify-center text-sm">
-              <a href={`${import.meta.env.BASE_URL}play`} className="font-bold text-blue-800 hover:underline">
+              <Link href="/play" className="font-bold text-blue-800 hover:underline">
                 Play the 82-0 game
-              </a>
+              </Link>
               <span className="text-stone-300">·</span>
-              <a href={import.meta.env.BASE_URL} className="font-bold text-blue-800 hover:underline">
+              <Link href="/" className="font-bold text-blue-800 hover:underline">
                 82-0 home
-              </a>
+              </Link>
             </nav>
           </motion.section>
 

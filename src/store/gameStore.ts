@@ -1,8 +1,20 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { DraftSlot, Player, SimulationResult, RunRecord } from "../types";
 import { generateDraftSlots, rerollTeam, rerollEra } from "../engine/draft";
 import { simulateTeam } from "../engine/simulation";
+
+// SSR-safe storage: on the server (Next.js prerender) `localStorage` is
+// undefined, so fall back to a no-op store to avoid crashing during render.
+const safeStorage = createJSONStorage(() =>
+  typeof window !== "undefined"
+    ? window.localStorage
+    : {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+      },
+);
 
 interface GameState {
   slots: DraftSlot[];
@@ -138,6 +150,7 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: "82-0-game-store",
+      storage: safeStorage,
       partialize: (state) => ({ recentRuns: state.recentRuns }),
     }
   )

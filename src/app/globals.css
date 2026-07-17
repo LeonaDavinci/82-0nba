@@ -54,7 +54,7 @@
   --nba-red: 350 82% 42%;
   --court-orange: 21 78% 53%;      /* basketball #E56A2C */
 
-  --app-font-sans: 'Inter', sans-serif;
+  --app-font-sans: var(--font-inter), 'Inter', sans-serif;
   --radius: 0.875rem;
 }
 
