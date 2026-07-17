@@ -1,0 +1,39 @@
+# ===== 操作系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ===== 依赖 / 构建产物（通用）=====
+node_modules/
+dist/
+build/
+out/
+target/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# ===== 日志 / 临时文件 =====
+*.log
+*.tmp
+*.cache
+.temp/
+
+# ===== 密钥 / 环境配置（勿提交）=====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ===== 包管理锁文件（按需保留，这里默认忽略可选）=====
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+# poetry.lock
