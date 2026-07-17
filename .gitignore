@@ -19,6 +19,10 @@ __pycache__/
 venv/
 env/
 
+# ===== TypeScript / 编辑器缓存 =====
+*.tsbuildinfo
+.replit-artifact/
+
 # ===== 日志 / 临时文件 =====
 *.log
 *.tmp
